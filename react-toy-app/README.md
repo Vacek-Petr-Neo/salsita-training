@@ -14,6 +14,11 @@ creating new and editing existing ones.  The user should also have the ability
 to delete pokemon as well.  Clicking on a pokemon name in the list should show
 the pokemon's information on the right hand side of the page.
 
+Note: You will likely need to install `react-router` in order to manage
+navigating between the different pages of the app. (you can find an example of
+how to use it
+[here](https://reactrouter.com/en/v6.3.0/getting-started/tutorial#connect-the-url))
+
 ### Database
 At current, this app has no backend, so use the objects found in `src/data.ts`
 as your "database": Read the list of pokemon from there.  Add them to that one,
