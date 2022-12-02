@@ -1,4 +1,5 @@
-// Write a function that takes a search term and a array of strings.  The
+// === PROMPT: ===
+// Write a function that takes a search term and an array of strings.  The
 // function should return all the elements in the array that fuzzy match the
 // search term.
 // A string fuzzy matches the search term if it contains the same letters as the

@@ -1,3 +1,4 @@
+// === PROMPT: ===
 // Create a class that creates a number stack object.
 // The stack should behave like a classic LIFO, where the last number you put in
 // is the first one you get out.
