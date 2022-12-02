@@ -48,7 +48,7 @@ export class NumberStack {
    * Returns the most recently pushed number in the stack.  Does not modify the
    * contents of the stack itself
    */
-  get top(): number {
+  get top(): number | undefined {
     return this.list[this.list.length-1];
   }
 
