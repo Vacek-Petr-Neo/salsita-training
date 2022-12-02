@@ -37,12 +37,12 @@ export class NumberStack {
 
   /** Puts a number on the top of the stack */
   public push(input: number): void {
-    return;
+    this.list.push(input);
   }
 
   /** Remove the most recently pushed number from the stack and return it */
-  public pop(): number {
-    return 0;
+  public pop(): number | undefined {
+    return this.list.pop();
   }
 
   /**
@@ -50,11 +50,11 @@ export class NumberStack {
    * contents of the stack itself
    */
   get top(): number {
-    return 0;
+    return this.list[this.list.length-1];
   }
 
   /** Returns all the contents of the stack */
   get contents(): number[] {
-    return [];
+    return this.list;
   }
 }
