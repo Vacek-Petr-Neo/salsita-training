@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+.button {
+  cursor: pointer;
+}
+.deleteButton[data-hidden="true"] {
+  visibility: hidden;
+}
+.sortable {
+  cursor: pointer;
+}
