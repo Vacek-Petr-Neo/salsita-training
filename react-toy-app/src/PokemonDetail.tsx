@@ -10,6 +10,7 @@ function PokemonDetail(props:{pokemon:Pokemon}) {
           <td colSpan={2}>
             <img alt={props.pokemon.name}
                  src={props.pokemon.picture !== '' ? props.pokemon.picture : 'https://upload.wikimedia.org/wikipedia/commons/5/51/Pokebola-pokeball-png-0.png'}
+                 style={({maxWidth: '300px', maxHeight: '300px'})}
             />
           </td>
         </tr>
