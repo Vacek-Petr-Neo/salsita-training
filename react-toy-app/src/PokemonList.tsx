@@ -3,9 +3,8 @@ import './App.css';
 import * as Backend from './data';
 import {Pokemon, PokemonType} from './data';
 import PokemonDetail from "./PokemonDetail";
-import {createBrowserRouter} from "react-router-dom";
+import {generatePath, Link, NavigateFunction, useNavigate} from "react-router-dom";
 import * as RouteList from './routes'
-import PokemonEdit from "./PokemonEdit";
 
 enum SortOrder {
   ASCENDING = 'ASC',
@@ -13,10 +12,9 @@ enum SortOrder {
 }
 type PokemonProps = keyof Pokemon;
 
-//const router = createBrowserRouter(RouteList.routes);
-
 function PokemonList() {
-  const [pokemonList, setPokemonList]: [pokemonList: Pokemon[], setPokemonList: Function] = useState([]);
+  const navigate : NavigateFunction = useNavigate();
+  const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const handleMount = () => {(async () => setPokemonList(await Backend.getPokemonList()))()};
   useEffect(handleMount,[]);
 
@@ -50,8 +48,7 @@ function PokemonList() {
   };
   const mapSortingToPokemonList = useMemo(calculateMapSortingToList, [pokemonList]);
 
-  const [currentSortOrder, setCurrentSortOrder]: [currentSortOrder: [PokemonProps, SortOrder], setCurrentSortOrder: Function]
-    = useState(['id', SortOrder.ASCENDING]);
+  const [currentSortOrder, setCurrentSortOrder] = useState<[PokemonProps, SortOrder]>(['id', SortOrder.ASCENDING]);
   const handleSort = (propName: PokemonProps) : MouseEventHandler<any> => (
     () : void => {
       setCurrentSortOrder([
@@ -77,14 +74,14 @@ function PokemonList() {
     }
   });
 
-  const [pokemonShown, setPokemonShown]: [pokemonShown: Pokemon | undefined, setPokemonShown: Function] = useState();
+  const [pokemonShown, setPokemonShown]= useState<Pokemon | undefined>();
   const handleShowDetail = (pokemon: Pokemon | undefined) : MouseEventHandler<any> => (() : void => {setPokemonShown(pokemon)});
 
   return (
       <main>
         <button
           value="add"
-          data-z={'a'/* TODO onClick={handleRenderEdit(null)} */}
+          onClick={() => navigate(RouteList.PATH_ADD)}
         >Add Pokemon</button>
         <table>
           <thead>
@@ -102,13 +99,14 @@ function PokemonList() {
               ?.map((pokemon: Pokemon) =>
                 <tr key={pokemon.id}>
                   <td>
-                    <span id={'deleteButton-' + pokemon.id}
+                    <a id={'deleteButton-' + pokemon.id}
+                          href="javascript:;"
                           className='button deleteButton'
                           onClick={handleDelete(pokemon.id)}
                           data-hidden='false'
-                    >Delete</span>
-                    {/* TODO <Link to={} ></Link> */}
-                    {/* <span onClick={handleRenderEdit(index)}></span> */}
+                    >Delete</a>
+                    &nbsp;
+                    <Link to={generatePath(RouteList.PATH_EDIT, {id: '' + pokemon.id})} >Edit</Link>
                   </td>
                   <td className='button'
                       onClick={handleShowDetail(pokemon)}
