@@ -1,10 +1,12 @@
-import React, {ChangeEvent, ChangeEventHandler, useEffect, useState} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, useEffect, useState} from 'react';
 import './App.css';
 import * as Backend from './data';
 import {Pokemon, PokemonType} from './data'
 import {useNavigate, useParams} from "react-router-dom";
 import PokemonDetail from "./PokemonDetail";
 import * as RouteList from './routes'
+
+const SUBMIT_BUTTON_HTMLID = 'button-pokemon-edit-submit';
 
 function PokemonEdit() {
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ function PokemonEdit() {
   const handleMount = () => {(async () => {
     if (paramsRaw.id === undefined) return;
     const pokemonId: Pokemon['id'] | undefined = parseInt(paramsRaw.id);
-    if (Number.isNaN(pokemonId) || pokemonId < 1) return;
+    if (Number.isNaN(pokemonId) || !Number.isInteger(pokemonId) || pokemonId < 1) return;
 
     const pokemonList : Pokemon[] = await Backend.getPokemonList();
     const pokemon = pokemonList.find(pokemon => pokemon.id === pokemonId)
@@ -59,9 +61,32 @@ function PokemonEdit() {
     }
   };
 
+  const handleSubmit = () : FormEventHandler<HTMLFormElement> => {
+    return async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const submitButton : HTMLInputElement | null = document.getElementById(SUBMIT_BUTTON_HTMLID) as HTMLInputElement;
+      if (submitButton !== undefined && submitButton !== null) {
+        submitButton.disabled = true;
+        setTimeout(() => {submitButton.disabled = false}, 1000);
+      }
+      if (formData.id === -1) {
+        await Backend.createPokemon({
+          name: formData.name,
+          level: formData.level,
+          picture: formData.picture,
+          type: formData.type,
+        })
+      } else {
+        await Backend.updatePokemon(formData.id, formData);
+      }
+      navigate(RouteList.PATH_LIST);
+      return;
+    }
+  };
+
   return (
     <main>
-      <form>
+      <form onSubmit={handleSubmit()}>
         <table>
           <tbody>
             <tr>
@@ -120,7 +145,11 @@ function PokemonEdit() {
 
             <tr>
               <td>
-                <input name='pokemon-submit' value='Save' type='submit' />
+                <input id={SUBMIT_BUTTON_HTMLID}
+                       name='pokemon-submit'
+                       value='Save'
+                       type='submit'
+                />
               </td>
             </tr>
           </tbody>
