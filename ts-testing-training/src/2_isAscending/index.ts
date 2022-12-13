@@ -11,3 +11,9 @@
 // isAscending([1, 2, 4, 7, 19]); // returns true
 // isAscending([1, 6, 2]); // returns false
 // isAscending([9, 8, 7]); // returns false
+export const isAscending = (input: number[]) : boolean => {
+  for (let i = 1; i < input.length; i++) {
+    if (input[i-1] > input[i]) return false;
+  }
+  return true;
+};
