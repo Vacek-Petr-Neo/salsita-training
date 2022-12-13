@@ -3,5 +3,5 @@
 // not
 
 export const isEven = (input: number): boolean => {
-  return false;
+  return input % 2 === 0;
 };
