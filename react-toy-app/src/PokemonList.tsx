@@ -18,7 +18,7 @@ function PokemonList() {
   const handleMount = () => {(async () => setPokemonList(await Backend.getPokemonList()))()};
   useEffect(handleMount,[]);
 
-  const calculateMapSortingToList = () : Map<PokemonProps, Map<SortOrder, Pokemon[]>> => {
+  const getSortedPokemon = (newSortKey: PokemonProps, newSortOrder: SortOrder) : Pokemon[] => {
     const dummy: Pokemon = {
       id: 1,
       name: '',
@@ -36,25 +36,28 @@ function PokemonList() {
       }
     };
 
-    const result = new Map<PokemonProps, Map<SortOrder, Pokemon[]>>();
-    for (let propName of Object.keys(dummy) as PokemonProps[]) {
-      const sortedPokemon = pokemonList.slice().sort(getSortingFunctionByPropName(propName));
-      const subMap = new Map<SortOrder, Pokemon[]>();
-      subMap.set(SortOrder.ASCENDING, sortedPokemon);
-      subMap.set(SortOrder.DESCENDING, sortedPokemon.slice().reverse())
-      result.set(propName, subMap);
+    const result = pokemonList.slice().sort(getSortingFunctionByPropName(newSortKey));
+    if (newSortOrder === SortOrder.DESCENDING) {
+      result.reverse();
     }
     return result;
   };
-  const mapSortingToPokemonList = useMemo(calculateMapSortingToList, [pokemonList]);
+  const [sortKey, setSortKey] = useState<PokemonProps>('id');
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASCENDING);
+  const sortedPokemonList = useMemo<Pokemon[]>(
+    () => (getSortedPokemon(sortKey, sortOrder)),
+    [pokemonList, sortKey, sortOrder]
+  );
 
-  const [currentSortOrder, setCurrentSortOrder] = useState<[PokemonProps, SortOrder]>(['id', SortOrder.ASCENDING]);
   const handleSort = (propName: PokemonProps) : MouseEventHandler<any> => (
     () : void => {
-      setCurrentSortOrder([
-        propName,
-        currentSortOrder[0] === propName && currentSortOrder[1] === SortOrder.ASCENDING ? SortOrder.DESCENDING : SortOrder.ASCENDING,
-      ])
+      if (propName === sortKey) {
+        setSortOrder(sortOrder === SortOrder.ASCENDING ? SortOrder.DESCENDING : SortOrder.ASCENDING)
+        return;
+      }
+
+      setSortKey(propName);
+      setSortOrder(SortOrder.ASCENDING);
     }
   )
 
@@ -94,9 +97,7 @@ function PokemonList() {
           </thead>
           <tbody>
           {
-            mapSortingToPokemonList.get(currentSortOrder[0])
-              ?.get(currentSortOrder[1])
-              ?.map((pokemon: Pokemon) =>
+            sortedPokemonList.map((pokemon: Pokemon) =>
                 <tr key={pokemon.id}>
                   <td>
                     <a id={'deleteButton-' + pokemon.id}
