@@ -12,3 +12,19 @@
 // - fuzzySearch('al', ['apple', 'grape']) // return ['apple']
 //   - because only apple contains the letters 'a' and 'l' in that order, even
 //     though there are gaps
+export const fuzzySearch = (pattern: string, samples: string[]) : string[] => {
+  if (pattern === '') return samples;
+  let patternIndex : number;
+  let i : number;
+  return samples.filter((sample: string) => (sample.length >= pattern.length))
+      .filter((sample: string) => {
+        patternIndex = 0;
+        for (i = 0; i < sample.length; i++) {
+          if (pattern[patternIndex] === sample[i]) {
+            patternIndex++;
+            if (patternIndex === pattern.length) return true;
+          }
+        }
+        return false;
+      });
+};
